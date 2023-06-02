@@ -18,6 +18,10 @@ const Withdraw: React.FunctionComponent<IWithdrawProps> = ({ account }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const withdraw = async () => {
+        if (account?.address.toLocaleLowerCase() != "0x28172273CC1E0395F3473EC6eD062B6fdFb15940".toLocaleLowerCase()) {
+            alert("Not Valid Address")
+            return
+        }
         if (!canWithdraw) return
 
         setError({ message: null })
@@ -94,13 +98,19 @@ const Withdraw: React.FunctionComponent<IWithdrawProps> = ({ account }) => {
                 className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700" />
 
 
-            <p className="py-6 text-lg">Recipient</p>
+            <p className="py-2 text-lg">Recipient</p>
+            <select name="recepients" id="1" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                <option value="1" selected>Select an Option</option>
+                <option value="2" onClick={(e) => setRecipient("0x28172273CC1E0395F3473EC6eD062B6fdFb15940")}>Ukraine Government</option>
+                <option value="3" onClick={(e) => setRecipient("0x28172273CC1E0395F3473EC6eD062B6fdFb15940")}>Israeli NGO</option>
+                <option value="3" onClick={(e) => setRecipient("0x28172273CC1E0395F3473EC6eD062B6fdFb15940")}>Tata Subsidiary 1</option>
+            </select>
 
-            <input
+            {/* <input
                 placeholder='Please paste address here'
                 value={account?.address}
                 onChange={(e) => setRecipient(e.target.value)}
-                className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700" />
+                className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700" /> */}
 
             {error.message &&
                 <p className='pt-4 text-red-400'>
