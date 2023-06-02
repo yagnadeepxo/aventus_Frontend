@@ -18,8 +18,8 @@ const Interface = () => {
             let accounts = await (window as any).ethereum.request({ method: "eth_requestAccounts" });
             let chainId = (window as any).ethereum.networkVersion;
 
-            if (chainId != "5") {
-                alert("Please switch to Goerli Testnet");
+            if (chainId != "80001") {
+                alert("Please switch to Mumbai Testnet");
                 throw "wrong-chain";
             }
 
