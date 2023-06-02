@@ -129,6 +129,7 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
                         name="ethAmount"
                         onChange={(e) => setETHAmount(0.1)}
                         value={0.1}
+                        checked
                         className="w-4 h-4 rounded focus:ring-gray-700 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                     />
 
