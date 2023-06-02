@@ -134,7 +134,7 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
                     />
 
                     <p className="text-md font-bold text-center text-gray-100">
-                        0.1 ETH
+                        0.1 MATIC
                     </p>
                 </div>
                 <div className="inline-flex flex-col space-y-4 items-center justify-start w-1/4 h-full pr-7 pb-1 relative ">
@@ -147,7 +147,7 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
                     />
                     <div className="w-[22rem] h-0.5 bg-white absolute mr-20 -top-2 -z-10" />
                     <p className="text-md font-bold text-center text-gray-100">
-                        1 ETH
+                        1 MATIC
                     </p>
                 </div>
             </div>
