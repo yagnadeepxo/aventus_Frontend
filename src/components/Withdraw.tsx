@@ -36,8 +36,9 @@ const Withdraw: React.FunctionComponent<IWithdrawProps> = ({ account }) => {
                 const input = JSON.parse(atob(inputValue))
 
                 var receipt = await (window as any).ethereum.request({ method: "eth_getTransactionReceipt", params: [input.txHash] });
+                console.log(receipt)
 
-                const log = receipt.logs[0];
+                const log = receipt.logs[1];
 
                 const decodedData = tornadoInterface.decodeEventLog("Deposit", log.data, log.topics);
 
