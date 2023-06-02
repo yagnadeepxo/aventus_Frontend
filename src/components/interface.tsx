@@ -52,7 +52,7 @@ const Interface = () => {
                         Withdraw
                     </p>
                 </div>
-                <div className="pb-6 border-2 w-[30rem] border-[#ef87ff] px-6 pt-4">
+                <div className="pb-6 border-2 w-[30rem] rounded-b-xl border-[#ef87ff] px-6 pt-4">
                     {tab === "deposit" ? <Deposit account={account} /> : <Withdraw account={account} />}
                 </div>
             </div>

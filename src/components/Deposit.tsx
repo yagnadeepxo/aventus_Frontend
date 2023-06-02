@@ -122,7 +122,10 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
                 className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700"
             />
 
-            <div className="flex mt-6 ml-40">
+
+
+            <div className="flex-col mt-6 ml-40">
+                <p className="text-lg py-3 -ml-8 ">Choose Denomination</p>
                 <div className="inline-flex flex-col space-y-4 items-center justify-start w-1/4 h-full pr-8 pb-1  relative">
                     <input
                         type="radio"
