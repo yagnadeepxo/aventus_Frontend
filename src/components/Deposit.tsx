@@ -117,7 +117,7 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
         <>
             <p className="text-lg py-3">Token</p>
             <input
-                value={"ETH"}
+                value={"MATIC"}
                 onChange={() => console.log()}
                 className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700"
             />
