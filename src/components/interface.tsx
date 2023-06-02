@@ -29,18 +29,10 @@ const Interface = () => {
                 address: activeAccount,
             };
             updateAccount(newAccountState);
-            localStorage.setItem("connected", "true");
         } catch (e) {
             console.log(e);
         }
     };
-
-    useEffect(() => {
-        const connected = localStorage.getItem("connected");
-        if (connected) {
-            connectMetamask();
-        }
-    }, [])
 
     return (
         <div>
