@@ -1,35 +1,37 @@
-import { Account } from '@/types/types.js';
-import { tornadoAddress, tornadoInterface } from '@/utils/contracts';
-import utils from '@/utils/utils';
-import { ethers } from 'ethers';
-import React, { useState } from 'react';
-import wc from '../circuit/witness_calculator.js'
-import Spinner from './ui/Spinner';
+import { Account } from "@/types/types.js";
+import { tornadoAddress, tornadoInterface } from "@/utils/contracts";
+import utils from "@/utils/utils";
+import { ethers } from "ethers";
+import React, { useState } from "react";
+import wc from "../circuit/witness_calculator.js";
+import Spinner from "./ui/Spinner";
 
 interface IDepositProps {
-    account: Account
+    account: Account;
 }
 
 const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
-
-    const [proofElements, updateProofElements] = useState('');
-    const [error, setError] = useState({ message: null })
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [ETHAmount, setETHAmount] = useState<number>(0.1)
+    const [proofElements, updateProofElements] = useState("");
+    const [error, setError] = useState({ message: null });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [ETHAmount, setETHAmount] = useState<number>(0.1);
 
     const depositEther = async () => {
-
-        if (!canDeposit) return
+        if (!canDeposit) return;
 
         //updateDepositButtonState(ButtonState.Disabled);
-        setIsLoading(true)
+        setIsLoading(true);
 
-        const secret = ethers.BigNumber.from(ethers.utils.randomBytes(32)).toString();
-        const nullifier = ethers.BigNumber.from(ethers.utils.randomBytes(32)).toString();
+        const secret = ethers.BigNumber.from(
+            ethers.utils.randomBytes(32)
+        ).toString();
+        const nullifier = ethers.BigNumber.from(
+            ethers.utils.randomBytes(32)
+        ).toString();
 
         const input = {
             secret: utils.BN256ToBin(secret).split(""),
-            nullifier: utils.BN256ToBin(nullifier).split("")
+            nullifier: utils.BN256ToBin(nullifier).split(""),
         };
 
         var res = await fetch("/deposit.wasm");
@@ -39,57 +41,59 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
 
         const commitment = r[1];
         const bigNumber = ethers.BigNumber.from(commitment);
-        const uint256Value = ethers.utils.hexZeroPad(bigNumber.toHexString(), 32);
+        const uint256Value = ethers.utils.hexZeroPad(
+            bigNumber.toHexString(),
+            32
+        );
         const nullifierHash = r[2];
-        const value = ethers.BigNumber.from("10000000000000000").toHexString();
+        const value = ethers.utils.parseEther(ETHAmount.toString());
         try {
             if (account) {
                 const tx = {
                     to: tornadoAddress,
                     from: account.address,
-                    value: value,
-                    data: tornadoInterface.encodeFunctionData("deposit", [uint256Value])
+                    value: value._hex,
+                    data: tornadoInterface.encodeFunctionData("deposit", [
+                        uint256Value,
+                    ]),
                 };
 
-                // const alchemyApiKey = '';
-                // const provider = new ethers.providers.AlchemyProvider('goerli', alchemyApiKey);
-                // const privkey = ''
-                // const signer = new ethers.Wallet(privkey, provider);
-                // const transactionResponse = await signer.sendTransaction(tx);
-                // const transactionReceipt = await transactionResponse.wait();
-                // console.log(transactionReceipt)
-                const txHash = await (window as any).ethereum.request({ method: "eth_sendTransaction", params: [tx] });
+                const txHash = await (window as any).ethereum.request({
+                    method: "eth_sendTransaction",
+                    params: [tx],
+                });
                 const proofElements = {
                     nullifierHash: `${nullifierHash}`,
                     secret: secret,
                     nullifier: nullifier,
                     commitment: `${commitment}`,
-                    txHash: txHash
+                    txHash: txHash,
                 };
-                // const proofElementsString = JSON.stringify(proofElements); // Convert the object to a JSON string
-                // const proofElementsBuffer = Buffer.from(proofElementsString, 'utf-8'); // Convert the string to a buffer using utf-8 encoding
-                // const proofElementsBase64 = proofElementsBuffer.toString('base64'); 
-                // updateProofElements(proofElementsBase64)
-                const btoa = (text: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string; }) => Buffer.from(text, 'binary').toString('base64');
-                updateProofElements(btoa(JSON.stringify(proofElements)))
 
-                setIsLoading(false)
+                const btoa = (
+                    text:
+                        | WithImplicitCoercion<string>
+                        | { [Symbol.toPrimitive](hint: "string"): string }
+                ) => Buffer.from(text, "binary").toString("base64");
+                updateProofElements(btoa(JSON.stringify(proofElements)));
+
+                setIsLoading(false);
             }
         } catch (e) {
             console.log(e);
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
-    let canDeposit = !!account
+    let canDeposit = !!account;
 
     const [isCopied, setIsCopied] = useState(false);
 
     async function copyTextToClipboard(text: string) {
-        if ('clipboard' in navigator) {
+        if ("clipboard" in navigator) {
             return await navigator.clipboard.writeText(text);
         } else {
-            return document.execCommand('copy', true, text);
+            return document.execCommand("copy", true, text);
         }
     }
 
@@ -107,7 +111,7 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    };
 
     return (
         <>
@@ -115,32 +119,65 @@ const Deposit: React.FunctionComponent<IDepositProps> = ({ account }) => {
             <input
                 value={"ETH"}
                 onChange={() => console.log()}
-                className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700" />
+                className="w-full inline-flex items-start justify-start py-2 pl-4 bg-white bg-opacity-0 shadow-inner border rounded border-gray-700"
+            />
 
-            <div className="flex mt-6">
-                <p>All deposits are 0.01 ETH</p>
+            <div className="flex mt-6 ml-40">
+                <div className="inline-flex flex-col space-y-4 items-center justify-start w-1/4 h-full pr-8 pb-1  relative">
+                    <input
+                        type="radio"
+                        name="ethAmount"
+                        onChange={(e) => setETHAmount(0.1)}
+                        value={0.1}
+                        className="w-4 h-4 rounded focus:ring-gray-700 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
+                    />
 
+                    <p className="text-md font-bold text-center text-gray-100">
+                        0.1 ETH
+                    </p>
+                </div>
+                <div className="inline-flex flex-col space-y-4 items-center justify-start w-1/4 h-full pr-7 pb-1 relative ">
+                    <input
+                        type="radio"
+                        name="ethAmount"
+                        onChange={(e) => setETHAmount(1)}
+                        value={1}
+                        className="w-4 h-4 rounded focus:ring-gray-700 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
+                    />
+                    <div className="w-[22rem] h-0.5 bg-white absolute mr-20 -top-2 -z-10" />
+                    <p className="text-md font-bold text-center text-gray-100">
+                        1 ETH
+                    </p>
+                </div>
             </div>
 
-            {proofElements &&
+            {proofElements && (
                 <>
-                    <p className='truncate mt-6'>
-                        <span className='text-md font-semibold'>Secret: </span>
-                        <span className='text-md text-gray-300 cursor-copy' onClick={() => handleCopyClick(proofElements)}>{proofElements}</span>
+                    <p className="truncate mt-6">
+                        <span className="text-md font-semibold">Secret: </span>
+                        <span
+                            className="text-md text-gray-300 cursor-copy"
+                            onClick={() => handleCopyClick(proofElements)}
+                        >
+                            {proofElements}
+                        </span>
                     </p>
-                    {isCopied && <p className='text-center text-sm pt-2'>Copied!</p>}
+                    {isCopied && (
+                        <p className="text-center text-sm pt-2">Copied!</p>
+                    )}
                 </>
-            }
-
+            )}
 
             <button
                 onClick={depositEther}
-                className={canDeposit ? "inline-flex justify-center pt-2 pb-2.5 bg-[#ef87ff] rounded mt-8 w-full cursor-pointer" :
-                    "inline-flex justify-center pt-2 pb-2.5 bg-gray-400 rounded mt-8 w-full cursor-not-allowed"}>
+                className={
+                    canDeposit
+                        ? "inline-flex justify-center pt-2 pb-2.5 bg-[#ef87ff] rounded mt-8 w-full cursor-pointer"
+                        : "inline-flex justify-center pt-2 pb-2.5 bg-gray-400 rounded mt-8 w-full cursor-not-allowed"
+                }
+            >
                 <p className="text-sm font-bold leading-tight text-center text-black">
-                    {isLoading ?
-                        <Spinner />
-                        : "Deposit"}
+                    {isLoading ? <Spinner /> : "Deposit"}
                 </p>
             </button>
         </>
